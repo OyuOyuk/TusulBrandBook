@@ -4,9 +4,8 @@ steps:
     args:
       - '-c'
       - |
-        REPO_LOWER=$(echo "$REPO_NAME" | tr '[:upper:]' '[:lower:]')
         pack build \
-          $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_LOWER/$_SERVICE_NAME:$COMMIT_SHA \
+          $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$(echo $REPO_NAME | tr '[:upper:]' '[:lower:]')/$_SERVICE_NAME:$COMMIT_SHA \
           --builder=gcr.io/buildpacks/builder:latest \
           --publish
 
