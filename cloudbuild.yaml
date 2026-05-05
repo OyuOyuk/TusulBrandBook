@@ -4,10 +4,11 @@ steps:
     args:
       - '-c'
       - |
-        gcloud builds submit . \
+        gcloud builds submit \
+          --options=logging=CLOUD_LOGGING_ONLY \
           --pack image=$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA \
           --service-account=projects/$PROJECT_ID/serviceAccounts/backend-api-brandbook@$PROJECT_ID.iam.gserviceaccount.com \
-          --options=logging=CLOUD_LOGGING_ONLY
+          .
 
 options:
   logging: CLOUD_LOGGING_ONLY
