@@ -1,5 +1,4 @@
 steps:
-  # Use the official Google Cloud SDK to run the buildpack
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'bash'
     args:
@@ -7,11 +6,12 @@ steps:
       - |
         gcloud builds submit . \
           --pack image=$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA \
-          --service-account=projects/$PROJECT_ID/serviceAccounts/backend-api-brandbook@$PROJECT_ID.iam.gserviceaccount.com
+          --service-account=projects/$PROJECT_ID/serviceAccounts/backend-api-brandbook@$PROJECT_ID.iam.gserviceaccount.com \
+          --options=logging=CLOUD_LOGGING_ONLY
 
 options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
   _AR_HOSTNAME: us-central1-docker.pkg.dev
-  _SERVICE_NAME: brand-book-backend # Change this to your preferred service name
+  _SERVICE_NAME: brand-book-backend
