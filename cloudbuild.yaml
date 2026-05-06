@@ -29,3 +29,4 @@ options:
 substitutions:
   _AR_HOSTNAME: us-central1-docker.pkg.dev
   _SERVICE_NAME: brand-book-backend
+  _LOW_REPO: tusulbrandbook
