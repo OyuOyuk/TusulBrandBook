@@ -9,7 +9,6 @@ steps:
           --builder=gcr.io/buildpacks/builder:latest \
           --publish
 
-  # CHECK LINE 20 HERE: Make sure there is a dash and a space before "name"
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
