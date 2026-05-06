@@ -14,7 +14,6 @@ const pool = new pg.Pool(
 
 pool.on("error", (err) => {
   console.error("Unexpected DB error:", err);
-  process.exit(1);
 });
 
 export default pool;

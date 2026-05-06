@@ -7,7 +7,7 @@ import express from "express";
 import router from "./routes/index.js";
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3000;
+const PORT = Number(process.env.PORT) || 8080;
 const corsOptions = {
     origin: 'http://localhost:3000'
 }
