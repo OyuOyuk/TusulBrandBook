@@ -1,4 +1,5 @@
 steps:
+  # STEP 1: Build the image (Your existing code)
   - name: 'gcr.io/k8s-skaffold/pack'
     entrypoint: 'sh'
     args:
@@ -8,6 +9,21 @@ steps:
           $_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$(echo $REPO_NAME | tr '[:upper:]' '[:lower:]')/$_SERVICE_NAME:$COMMIT_SHA \
           --builder=gcr.io/buildpacks/builder:latest \
           --publish
+
+  # STEP 2: Deploy to Cloud Run (The missing piece)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_SERVICE_NAME' # This uses your variable brand-book-backend
+      - '--image'
+      - '$_AR_HOSTNAME/$PROJECT_ID/cloud-run-source-deploy/$(echo $REPO_NAME | tr '[:upper:]' '[:lower:]')/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--region'
+      - 'asia-northeast1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
 
 options:
   logging: CLOUD_LOGGING_ONLY
