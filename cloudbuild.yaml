@@ -21,7 +21,8 @@ steps:
       - '--platform'
       - 'managed'
       - '--allow-unauthenticated'
-
+      - '--service-account'
+      - 'backend-api-brandbook@study-on-se.iam.gserviceaccount.com'
 options:
   logging: CLOUD_LOGGING_ONLY
 
