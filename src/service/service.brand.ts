@@ -288,7 +288,7 @@ class GenerationService {
             await pool.query(`INSERT INTO brand_books ( user_id, company_name, brand_dna, palette, typography, logo_url, logo_prompt)
                     VALUES ($1, $2, $3, $4, $5, $6, $7)
                 `, [userId, brandBook.companyName, JSON.stringify(brandBook.brandDNA), JSON.stringify(brandBook.palette), JSON.stringify(brandBook.typography), brandBook.logoUrl, brandBook.logoPrompt])
-            await pool.query('UPDATE users SET has_paid = false WHERE id = $1', [userId])
+            // await pool.query('UPDATE users SET has_paid = false WHERE id = $1', [userId])
             return brandBook
         }
     async generateFromLogo(input: LogoBrandInput, companyName: string,
@@ -362,7 +362,7 @@ class GenerationService {
                     message: "Logo concept ready. Call /api/brand/generate-logo to generate the image.",
                     data: { logoPrompt },
                 });
-        await pool.query('UPDATE users SET has_paid = false WHERE id = $1', [userId])
+        // await pool.query('UPDATE users SET has_paid = false WHERE id = $1', [userId])
         return brandBook;
         }
 
@@ -446,7 +446,7 @@ class GenerationService {
             await pool.query(`INSERT INTO brand_books ( user_id, company_name, brand_dna, palette, typography, logo_url, logo_prompt)
                     VALUES ($1, $2, $3, $4, $5, $6, $7)
                 `, [userId, brandBook.companyName, JSON.stringify(brandBook.brandDNA), JSON.stringify(brandBook.palette), JSON.stringify(brandBook.typography), brandBook.logoUrl, brandBook.logoPrompt])
-            await pool.query('UPDATE users SET has_paid = false WHERE id = $1', [userId])
+            // await pool.query('UPDATE users SET has_paid = false WHERE id = $1', [userId])
             return brandBook;
     }   
     async getHistory(userId: string){

@@ -24,11 +24,11 @@ router.get("/health", (_req, res) => {
     logoGenerationEnabled: !!process.env.HF_TOKEN,
   });
 });
-router.post("/text",verifyToken ,verifyPayment ,upload.single("logo"), GenerationController.fromText);
+router.post("/text",verifyToken ,upload.single("logo"), GenerationController.fromText);
 
-router.post("/logo",verifyToken , verifyPayment ,upload.single("logo"), GenerationController.fromLogo);
+router.post("/logo",verifyToken  ,upload.single("logo"), GenerationController.fromLogo);
 
-router.post("/prompt",verifyToken ,verifyPayment, upload.single("logo"), GenerationController.fromPrompt);
+router.post("/prompt",verifyToken , upload.single("logo"), GenerationController.fromPrompt);
 router.get("/history", verifyToken, GenerationController.getHistory);
 
 
