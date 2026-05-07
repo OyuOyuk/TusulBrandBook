@@ -9,7 +9,9 @@ import router from "./routes/index.js";
 const app = express();
 const PORT = Number(process.env.PORT) || 8080;
 const corsOptions = {
-    origin: ['http://localhost:5173', 'https://app.oyutechnology.com', 'https://www.oyutechnology.com']
+    origin: ['http://localhost:5173', 'https://app.oyutechnology.com', 'https://www.oyutechnology.com'],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Authorization", "Content-Type"],
 }
 app.use(cors(corsOptions))
 app.use(helmet({
