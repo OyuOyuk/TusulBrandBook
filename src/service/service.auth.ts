@@ -22,7 +22,7 @@ class AuthService {
 
         const password_hash = await bcrypt.hash(password, saltRounds);
         const code = this.generateOtp();
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+        const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES* 60 * 1000);
 
         await pool.query(
             "INSERT INTO pending_otps(email, password_hash, code, expires_at) VALUES ($1, $2, $3, $4)",
