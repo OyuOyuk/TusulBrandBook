@@ -67,6 +67,10 @@ class AuthService {
         if (result.rows.length === 0) throw new Error("No such user");
 
         const user = result.rows[0];
+
+        // Google-only account, no password set
+        if (!user.password_hash) throw new Error("Please sign in with Google");
+
         const valid = await bcrypt.compare(password, user.password_hash);
         if (!valid) throw new Error("Wrong password");
 
@@ -84,7 +88,72 @@ class AuthService {
         await pool.query(
             "DELETE FROM otps WHERE used = TRUE OR expires_at < NOW()"
     );
-}
+    }       
+    async getGoogleAuthUrl() {
+        const params = new URLSearchParams({
+            client_id: process.env.GOOGLE_CLIENT_ID!,
+            redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+            response_type: "code",
+            scope: "email profile",
+            access_type: "offline",
+        });
+
+        return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+    }
+
+    async handleGoogleCallback(code: string) {
+        // Step 1: Exchange code for tokens
+        const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({
+                code,
+                client_id: process.env.GOOGLE_CLIENT_ID!,
+                client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+                redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+                grant_type: "authorization_code",
+            }),
+        });
+
+        const tokens = await tokenRes.json();
+        if (!tokenRes.ok) throw new Error("Failed to exchange Google code for tokens");
+
+        // Step 2: Get user info from Google
+        const userRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+            headers: { Authorization: `Bearer ${tokens.access_token}` },
+        });
+
+        const googleUser = await userRes.json();
+        if (!userRes.ok) throw new Error("Failed to fetch Google user info");
+
+        const { id: googleId, email } = googleUser;
+
+        // Step 3: Find existing user by google_id or email
+        const existing = await pool.query(
+            "SELECT * FROM users WHERE google_id = $1 OR email = $2",
+            [googleId, email]
+        );
+
+        let user;
+
+        if (existing.rows.length > 0) {
+            user = existing.rows[0];
+
+            // Link google_id if they previously registered with email
+            if (!user.google_id) {
+                await pool.query("UPDATE users SET google_id = $1 WHERE id = $2", [googleId, user.id]);
+            }
+        } else {
+            // Brand new user — create them without a password
+            const result = await pool.query(
+                "INSERT INTO users(email, google_id) VALUES ($1, $2) RETURNING id, email, role",
+                [email, googleId]
+            );
+            user = result.rows[0];
+        }
+
+        return this.signToken(user.id, user.email, user.role);
+    }
 }
 
 export default new AuthService;

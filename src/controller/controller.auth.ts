@@ -52,6 +52,33 @@ class AuthController {
             if (error.message === "No such user" || error.message === "Wrong password") {
                 return res.status(401).json({ success: false, message: "Invalid email or password" });
             }
+            if (error.message === "Please sign in with Google") {
+                return res.status(400).json({ success: false, message: error.message });
+            }
+            next(error);
+        }
+    }
+    async googleAuth(req: Request, res: Response, next: NextFunction) {
+        try {
+            const url = await AuthService.getGoogleAuthUrl();
+            return res.redirect(url);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async googleCallback(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { code } = req.query;
+            if (!code || typeof code !== "string") {
+                return res.status(400).json({ success: false, message: "Missing Google auth code" });
+            }
+
+            const token = await AuthService.handleGoogleCallback(code);
+
+            // Redirect to frontend with JWT in query param
+            return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+        } catch (error) {
             next(error);
         }
     }
