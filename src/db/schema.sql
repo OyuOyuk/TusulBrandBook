@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
   id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email       TEXT UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
-  created_at  TIMESTAMPTZ DEFAULT NOW()
-  role TEXT DEFAULT 'user' 
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  role TEXT DEFAULT 'user' ,
   has_paid BOOLEAN DEFAULT FALSE
 );
 
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS brand_books (
   logo_url     TEXT,
   logo_prompt  TEXT,
   created_at   TIMESTAMPTZ DEFAULT NOW(),
-  edits_remaining INT DEFAULT 3,
+  edits_remaining INT DEFAULT 3
 );
 
 CREATE INDEX IF NOT EXISTS idx_brand_books_user_id ON brand_books(user_id);

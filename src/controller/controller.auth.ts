@@ -5,16 +5,35 @@ class AuthController {
     async register(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body;
-            if (!email  || !password) {
+            if (!email || !password) {
                 return res.status(400).json({ success: false, message: "Email and password required" });
             }
-            
-            const token = await AuthService.register(email, password);
-            return res.status(201).json({ success: true, token });
-        } catch (error: any) {
 
-            if (error.message === "Email already in use" ) {
+            await AuthService.register(email, password);
+            return res.status(200).json({
+                success: true,
+                message: "OTP sent to your email. Please verify to complete registration.",
+            });
+        } catch (error: any) {
+            if (error.message === "Email already in use") {
                 return res.status(409).json({ success: false, message: error.message });
+            }
+            next(error);
+        }
+    }
+
+    async verifyEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { email, code } = req.body;
+            if (!email || !code) {
+                return res.status(400).json({ success: false, message: "Email and OTP code required" });
+            }
+
+            const token = await AuthService.verifyEmail(email, code);
+            return res.status(200).json({ success: true, token });
+        } catch (error: any) {
+            if (error.message === "Invalid or expired OTP") {
+                return res.status(400).json({ success: false, message: error.message });
             }
             next(error);
         }
@@ -26,6 +45,7 @@ class AuthController {
             if (!email || !password) {
                 return res.status(400).json({ success: false, message: "Email and password required" });
             }
+
             const token = await AuthService.loginByEmail(email, password);
             return res.status(200).json({ success: true, token });
         } catch (error: any) {
@@ -35,7 +55,6 @@ class AuthController {
             next(error);
         }
     }
- 
 }
 
 export default new AuthController;
