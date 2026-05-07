@@ -8,6 +8,6 @@ router.post("/register",  controllerAuth.register);
 router.post("/verify-email", controllerAuth.verifyEmail);
 
 router.post("/loginByEmail", controllerAuth.loginByEmail);
-router.get("/auth/google", controllerAuth.googleAuth);
-router.get("/auth/google/callback", controllerAuth.googleCallback);
+router.get("/google", controllerAuth.googleAuth);
+router.get("/google/callback", controllerAuth.googleCallback);
 export default router;
