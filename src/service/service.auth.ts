@@ -11,7 +11,7 @@ class AuthService {
        
         const password_hash = await bcrypt.hash(password, saltRounds);
         const result = await pool.query(
-            "INSERT INTO users(email, password_hash) VALUES ($1, $2, 3$) RETURNING id, email, role",
+            "INSERT INTO users(email, password_hash) VALUES ($1, $2) RETURNING id, email, role",
             [email, password_hash]
         );
         const user = result.rows[0];
