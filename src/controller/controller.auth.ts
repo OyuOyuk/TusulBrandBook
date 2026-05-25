@@ -79,7 +79,7 @@ class AuthController {
             // Redirect to frontend with JWT in query param
             return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
         } catch (error) {
-            next(error);
+            next(error);    
         }
     }
 }
