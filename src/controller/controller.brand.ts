@@ -5,6 +5,7 @@ import { error } from "node:console";
 import { SSEEvent } from "../middleware/middleware.sse.js";
 import type { TextBrandInput, LogoBrandInput, QuickBrandInput } from "../types/index.js";
 import serviceBrand from "../service/service.brand.js";
+import e from "cors";
 
 function extractImage(req: Request): { imageBase64: string; mimeType: LogoBrandInput["mimeType"] } | undefined {
   if (!req.file) return undefined;
@@ -122,6 +123,22 @@ class GenerationController{
                 return;
             }
             res.status(500).json({ success: false, message: "Edit failed" });
+        }
+    }
+    async getBrandBook(req: Request, res: Response) {
+        try {
+            const id = req.params.id as string;
+            const userId = req.user?.userId
+
+            const brandBook = await serviceBrand.getBrandBook(userId!, id);
+            if (!brandBook || !brandBook.rows.length) {
+                res.status(404).json({ success: false, message: "Brand book not found" });
+                return;
+            }
+            res.status(200).json({ success: true, data: brandBook.rows[0] });
+        } catch (err) {
+            console.error("[getBrandBook] error:", err);
+            res.status(500).json({ success: false, message: "Failed to fetch brand book" });
         }
     }
 }

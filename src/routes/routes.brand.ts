@@ -30,6 +30,7 @@ router.post("/logo",verifyToken  ,upload.single("logo"), GenerationController.fr
 
 router.post("/prompt",verifyToken , upload.single("logo"), GenerationController.fromPrompt);
 router.get("/history", verifyToken, GenerationController.getHistory);
-
+router.get('/book/:id', verifyToken, GenerationController.getBrandBook);
+router.post('/edit/:id', verifyToken, GenerationController.editBrandBook);
 
 export default router

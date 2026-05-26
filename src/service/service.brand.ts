@@ -416,6 +416,15 @@ class GenerationService {
 
     return updated.rows[0];
   }
+  async getBrandBook(userId: string, id: string) {
+    const result = await pool.query(
+      `SELECT * FROM brand_books WHERE id = $1 AND user_id = $2`,
+      [id, userId]
+    )
+    if (!result.rows.length) return null;
+
+    return result.rows[0];
+  }
 }
 
 export default new GenerationService();
