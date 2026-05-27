@@ -126,20 +126,20 @@ class GenerationController{
         }
     }
     async getBrandBook(req: Request, res: Response) {
-        try {
-            const id = req.params.id as string;
-            const userId = req.user?.userId
+  try {
+    const id = req.params.id as string;
+    const userId = req.user?.userId;
 
-            const brandBook = await serviceBrand.getBrandBook(userId!, id);
-            if (!brandBook || !brandBook.rows.length) {
-                res.status(404).json({ success: false, message: "Brand book not found" });
-                return;
-            }
-            res.status(200).json({ success: true, data: brandBook.rows[0] });
-        } catch (err) {
-            console.error("[getBrandBook] error:", err);
-            res.status(500).json({ success: false, message: "Failed to fetch brand book" });
-        }
+    const brandBook = await serviceBrand.getBrandBook(userId!, id);
+    if (!brandBook) {
+      res.status(404).json({ success: false, message: "Brand book not found" });
+      return;
     }
+    res.status(200).json({ success: true, data: brandBook });
+  } catch (err) {
+    console.error("[getBrandBook] error:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch brand book" });
+  }
+}
 }
 export default new GenerationController
