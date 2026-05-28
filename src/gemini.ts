@@ -15,7 +15,7 @@ if (API_KEYS.length === 0) {
   throw new Error("No Gemini API keys found. Set GEMINI_API_KEY or GEMINI_API_KEY_1 in .env");
 }
 
-const GEMINI_MODEL    = "gemini-2.5-flash";
+const GEMINI_MODEL    = "gemini-3.5-flash";
 const RETRY_DELAY_MS  = 35_000;
 const MAX_RETRIES     = 2;
 
